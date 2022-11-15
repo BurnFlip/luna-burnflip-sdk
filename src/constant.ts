@@ -72,8 +72,7 @@ export const ADDRESSES = {
   },
 };
 
-// export const API_URL = "https://api.burnflip.com";
-export const API_URL = "http://localhost:8000";
+export const API_URL = "https://api.burnflip.com";
 
 // classic burn mechanism
 export const taxRateUrl = 'https://lcd.terra.dev/terra/treasury/v1beta1/tax_rate';
