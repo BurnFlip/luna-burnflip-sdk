@@ -72,7 +72,8 @@ export const ADDRESSES = {
   },
 };
 
-export const API_URL = "https://burnflip-api-prod.herokuapp.com";
+// export const API_URL = "https://api.burnflip.com";
+export const API_URL = "http://localhost:8000";
 
 // classic burn mechanism
 export const taxRateUrl = 'https://lcd.terra.dev/terra/treasury/v1beta1/tax_rate';
