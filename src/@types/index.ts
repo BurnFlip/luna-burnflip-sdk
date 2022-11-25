@@ -1,21 +1,21 @@
 export enum FlipResult {
-    HEAD = 0,
-    TAIL = 1,
+  HEAD = 0,
+  TAIL = 1,
 }
 export type NETWORK_INFO = {
-    url: string,
-    chainId: string,
-    gasPriceUrl: string,
-}
-export type NETWORK = "mainnet" | "classic" | "testnet" | "localterra";
+  url: string;
+  chainId: string;
+  gasPriceUrl: string;
+};
+export type NETWORK = 'mainnet' | 'classic' | 'testnet' | 'localterra';
 
 export type NetworkData = {
-    [key in NETWORK]: NETWORK_INFO
-}
+  [key in NETWORK]: NETWORK_INFO;
+};
 
 export type BetDto = {
-    address: string;
-    flip: FlipResult;
-    amount: string;
-    signature: string;
+  address: string;
+  flip: FlipResult;
+  amount: string;
+  signature: string;
 };

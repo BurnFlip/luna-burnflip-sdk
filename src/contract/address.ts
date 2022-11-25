@@ -1,7 +1,5 @@
 // sync-ed from root via `tr sync-refs`
-  // @ts-ignore
-import { ConnectedWallet } from "@terra-money/wallet-provider";
-import { ADDRESSES } from "../constant";
+import { ADDRESSES } from '../constant';
 export const contractAddress = (name: string, network: string) => {
   // Make sure the contract has actually been deployed to selected network.
   // @ts-ignore
@@ -9,4 +7,4 @@ export const contractAddress = (name: string, network: string) => {
     // @ts-ignore
     return ADDRESSES[network]?.[name]?.contractAddresses?.default;
   }
-}
+};

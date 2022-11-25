@@ -16,9 +16,9 @@ import {
 } from '@terra-money/terra.js';
 import { ConnectedWallet } from '@terra-money/wallet-provider';
 import { NETWORK } from '../../@types';
-import { NETWORKS, taxCapUrl, taxRateUrl } from '../../constant';
+import { NETWORKS, taxCapUrl, taxRateUrl, UNIT } from '../../constant';
 import { contractAddress } from '../address';
-import fetch from "cross-fetch";
+import fetch from 'cross-fetch';
 
 function isConnectedWallet(x: Wallet | ConnectedWallet): x is ConnectedWallet {
   return typeof (x as Wallet).key === 'undefined';
@@ -529,7 +529,6 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
   wallet: Wallet | ConnectedWallet;
   taxRate: any;
   taxCap: any;
-
   constructor(client: LCDClient, wallet: Wallet | ConnectedWallet) {
     super(client);
     this.client = client;
@@ -550,12 +549,15 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
   }
 
   initGas = () => {
+    // Retrieve current gas prices
     if (this.client.config.isClassic) {
+      // @ts-ignore
       fetch(taxRateUrl).then(taxRateRaw => {
         taxRateRaw.json().then(res => {
           this.taxRate = res;
         });
       });
+      // @ts-ignore
       fetch(taxCapUrl).then(taxCapRaw => {
         taxCapRaw.json().then(res => {
           this.taxCap = res;
@@ -565,7 +567,6 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
   };
 
   calcFee = async (luncAmount: string, msgs: Msg[]) => {
-    let actualFundAmount = parseFloat(luncAmount);
     let txFee;
     try {
       // Estimate the gas amount and fee (without burn tax) for the message
@@ -596,38 +597,35 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
         }
       } catch (e) {
         console.log('fee estimation error - estimateFee: ', e);
-        txFee = new Fee(0, { uluna: 0 });
+        txFee = new Fee(UNIT, { uluna: luncAmount });
       }
 
       let fee = txFee;
+      let taxAmount = 0;
       // Retrieve the tax rate and tax cap
       if (this.client.config.isClassic) {
         try {
           // Compute the burn tax amount for this transaction and convert to Coins
-          const taxAmount = Math.min(
+          taxAmount = Math.min(
             Math.ceil(
-              parseFloat(luncAmount) * parseFloat(this.taxRate.tax_rate)
+              parseFloat(luncAmount) * parseFloat(this.taxRate?.tax_rate)
             ),
-            parseInt(this.taxCap.tax_cap)
+            parseInt(this.taxCap?.tax_cap)
           );
           const taxAmountCoins = new Coins({ uluna: taxAmount });
 
           // Add the burn tax component to the estimated fee
           const totalFee = txFee.amount.add(taxAmountCoins);
           fee = new Fee(txFee.gas_limit, totalFee);
-          actualFundAmount -= taxAmount;
         } catch (e) {
           console.log('tax calculation error: ', e);
         }
       }
 
-      return { fee, actualFunds: new Coins({ uluna: actualFundAmount }) };
+      return { fee, txFee, tax: taxAmount };
     } catch (e) {
       console.log('fee estimation error: ', e);
-      return {
-        fee: new Fee(0, { uluna: 0 }),
-        actualFunds: new Coins({ uluna: actualFundAmount }),
-      };
+      return { fee: new Fee(UNIT, { uluna: luncAmount }), txFee, tax: 0 };
     }
   };
 
@@ -647,24 +645,21 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
     );
 
     const luncData = funds?.toData();
-    const { fee, actualFunds } = await this.calcFee(
-      luncData?.[0].amount || '1',
-      [execMsg]
-    );
+    const { fee } = await this.calcFee(luncData?.[0].amount || '1', [execMsg]);
     const actualExecMsg = new MsgExecuteContract(
       senderAddress,
       this.contractAddress,
       {
         deposit: {},
       },
-      actualFunds
+      funds
     );
 
     if (isConnectedWallet(this.wallet)) {
       const tx = await this.wallet.post({
         msgs: [actualExecMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         fee: fee,
         feeDenoms: ['uluna'],
       });
@@ -673,7 +668,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const execTx = await this.wallet.createAndSignTx({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         feeDenoms: ['uluna'],
         fee,
       });
@@ -708,7 +703,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const tx = await this.wallet.post({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         fee: fee,
         feeDenoms: ['uluna'],
       });
@@ -717,7 +712,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const execTx = await this.wallet.createAndSignTx({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         feeDenoms: ['uluna'],
         fee,
       });
@@ -754,7 +749,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const tx = await this.wallet.post({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         feeDenoms: ['uluna'],
         fee,
       });
@@ -763,7 +758,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const execTx = await this.wallet.createAndSignTx({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         feeDenoms: ['uluna'],
         fee,
       });
@@ -797,7 +792,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const tx = await this.wallet.post({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         fee: fee,
         feeDenoms: ['uluna'],
       });
@@ -806,7 +801,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const execTx = await this.wallet.createAndSignTx({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         fee: fee,
         feeDenoms: ['uluna'],
       });
@@ -846,7 +841,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const tx = await this.wallet.post({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         fee: fee,
         feeDenoms: ['uluna'],
       });
@@ -855,7 +850,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const execTx = await this.wallet.createAndSignTx({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         fee: fee,
         feeDenoms: ['uluna'],
       });
@@ -895,7 +890,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const tx = await this.wallet.post({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         feeDenoms: ['uluna'],
         fee,
       });
@@ -904,7 +899,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const execTx = await this.wallet.createAndSignTx({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         feeDenoms: ['uluna'],
         fee,
       });
@@ -944,7 +939,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const tx = await this.wallet.post({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         fee: fee,
         feeDenoms: ['uluna'],
       });
@@ -989,7 +984,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const tx = await this.wallet.post({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         fee: fee,
         feeDenoms: ['uluna'],
       });
@@ -998,7 +993,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const execTx = await this.wallet.createAndSignTx({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         fee: fee,
         feeDenoms: ['uluna'],
       });
@@ -1041,7 +1036,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const tx = await this.wallet.post({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         fee: fee,
         feeDenoms: ['uluna'],
       });
@@ -1050,7 +1045,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const execTx = await this.wallet.createAndSignTx({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         fee: fee,
         feeDenoms: ['uluna'],
       });
@@ -1087,7 +1082,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const tx = await this.wallet.post({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         fee: fee,
         feeDenoms: ['uluna'],
       });
@@ -1096,7 +1091,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const execTx = await this.wallet.createAndSignTx({
         msgs: [execMsg],
         // @ts-ignore
-        isClassic: this.network ===  'classic',
+        isClassic: this.network === 'classic',
         fee: fee,
         feeDenoms: ['uluna'],
       });
