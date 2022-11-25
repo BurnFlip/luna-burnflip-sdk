@@ -16,10 +16,12 @@ import {
   createSignature,
   FlipResult,
   getReadonlyFlipClient,
-  getWLUNAClient,
+  getTokenBalance,
+  increaseAllowance,
+  mintToken,
+  bet
 } from 'luna-burnflip-sdk';
-import { Coins, LCDClient, MnemonicKey } from '@terra-money/terra.js';
-import { bet } from 'luna-burnflip-sdk';
+import { LCDClient, MnemonicKey } from '@terra-money/terra.js';
 
 let lcd = new LCDClient({
     URL: 'https://lcd.terra.dev',
@@ -28,12 +30,10 @@ let lcd = new LCDClient({
 
 const readFlipClient = async () => {
   // Readonly client for fetching data
-  const readonlyFlipClient = getReadonlyFlipClient(lcd);
+  const readonlyFlipClient = getReadonlyFlipClient("classic");
 
   const history = await readonlyFlipClient.getAllBettingHistoryQuery({});
-  const owner = await readonlyFlipClient.getOwnerQuery();
-
-  console.log('data: ', history.history.length, owner.owner);
+  console.log('bet history: ', history);
 };
 
 ```
@@ -41,21 +41,17 @@ const readFlipClient = async () => {
 ##### Mint WLUNC
 ```bash
 
-const writeWLUNAClient = async () => {
+const mint = async () => {
   const mk = new MnemonicKey({
-    mnemonic:
-      MNEMONIC,
+    mnemonic: MNEMONIC,
   });
   const wallet = lcd.wallet(mk);
-  const wlunaClient = getWLUNAClient(lcd, wallet);
-
+  await mintToken('classic', wallet, "10000000");
   // Mint 1 WLUNC
-  await wlunaClient.deposit(new Coins({ uluna: 1000000 }));
-  const balance = await wlunaClient.balanceQuery({
-    address: wallet.key.accAddress,
-  });
+  const balance = await getTokenBalance('classic', wallet.key.accAddress);
   console.log('balance: ', balance);
 };
+
 ```
 
 ##### Bet
@@ -63,33 +59,34 @@ const writeWLUNAClient = async () => {
 
 const doBet = async () => {
   const mk = new MnemonicKey({
-    mnemonic:
-      MNEMONIC,
+    mnemonic: MNEMONIC,
   });
   const wallet = lcd.wallet(mk);
-  const wlunaClient = getWLUNAClient(lcd, wallet);
-  const flipQueryClient = getReadonlyFlipClient(lcd);
+  const flipQueryClient = getReadonlyFlipClient("classic");
+  //approve
+  await increaseAllowance(
+    'classic',
+    wallet,
+    "10000000",
+    flipQueryClient.contractAddress
+  );
 
-  //approve 
-  await wlunaClient.increaseAllowance({
-    amount: "10000000", // 10 wlunc
-    spender: flipQueryClient.contractAddress,
-  });
-
-  const signature = await createSignature({
-    address: wallet.key.accAddress,
-    amount: '10000000', // 10 wlunc
-    flip: FlipResult.HEAD,
-  }, wallet);
+  const signature = await createSignature(
+    {
+      address: wallet.key.accAddress,
+      amount: '10000000', // 10 wlunc
+      flip: FlipResult.HEAD,
+    },
+    wallet
+  );
 
   await bet(
     {
       address: wallet.key.accAddress,
       amount: '10000000', // 10 wlunc
       flip: FlipResult.HEAD,
-      signature: signature
-    },
-    wallet
+      signature: signature,
+    }
   ).then(res => {
     console.log('bet result: ', res.data);
   });

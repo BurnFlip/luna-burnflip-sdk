@@ -17,9 +17,11 @@ import { ConnectedWallet } from '@terra-money/wallet-provider';
 import { NETWORK } from '../../@types';
 import { NETWORKS, taxCapUrl, taxRateUrl } from '../../constant';
 import { contractAddress } from '../address';
-import fetch from "cross-fetch";
+import fetch from 'cross-fetch';
 
-export function isConnectedWallet(x: Wallet | ConnectedWallet): x is ConnectedWallet {
+export function isConnectedWallet(
+  x: Wallet | ConnectedWallet
+): x is ConnectedWallet {
   return typeof (x as Wallet).key === 'undefined';
 }
 export async function waitForInclusionInBlock(

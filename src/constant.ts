@@ -20,7 +20,7 @@ export const NETWORKS: NetworkData = {
     url: 'http://localhost:1317',
     chainId: 'localterra',
     gasPriceUrl: 'https://pisco-api.terra.dev/gas-prices',
-  }
+  },
 };
 
 export const ADDRESSES = {
@@ -60,20 +60,24 @@ export const ADDRESSES = {
     wlunc: {
       codeId: '6367',
       contractAddresses: {
-        default: 'terra1z3s4x8t8p3m53afjyad723scfvk028xn93acdm',
+        default: 'terra17sp3f2h5aakp2kjtvgn4nlz2wrghtqe529undc',
       },
     },
     flip: {
       codeId: '6368',
       contractAddresses: {
-        default: 'terra1ex2nrl2ymraxjcwak0gnqw2w76z65lnmqama3x',
+        default: 'terra1k4nu50mwyxy40k7kxtky9hnsdnkexc77k3zr79',
       },
     },
   },
 };
 
-export const API_URL = "https://api.burnflip.com";
+export const API_URL = 'https://api.burnflip.com';
 
 // classic burn mechanism
-export const taxRateUrl = 'https://lcd.terra.dev/terra/treasury/v1beta1/tax_rate';
-export const taxCapUrl = 'https://lcd.terra.dev/terra/treasury/v1beta1/tax_caps/uluna';
+export const taxRateUrl =
+  'https://lcd.terra.dev/terra/treasury/v1beta1/tax_rate';
+export const taxCapUrl =
+  'https://lcd.terra.dev/terra/treasury/v1beta1/tax_caps/uluna';
+
+export const UNIT = 1000000;
