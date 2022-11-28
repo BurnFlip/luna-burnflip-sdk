@@ -8,6 +8,7 @@ export const createSignature = async (
     address: string;
     flip: FlipResult;
     amount: string;
+    timestamp: string
   },
   wallet: Wallet | ConnectedWallet
 ) => {
@@ -16,6 +17,7 @@ export const createSignature = async (
       Buffer.from(wallet.terraAddress),
       Buffer.from(data.amount + ''),
       Buffer.from(data.flip + ''),
+      Buffer.from(data.timestamp)
     ]);
 
     const signatureBytes = await wallet.signBytes(bytes);
@@ -31,6 +33,7 @@ export const createSignature = async (
       Buffer.from(wallet.key.accAddress),
       Buffer.from(data.amount + ''),
       Buffer.from(data.flip + ''),
+      Buffer.from(data.timestamp)
     ]);
 
     const signatureBytes = await wallet.key.sign(bytes);
