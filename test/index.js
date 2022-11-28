@@ -10,7 +10,7 @@ import { LCDClient, MnemonicKey } from '@terra-money/terra.js';
 import { bet } from '../dist/index.js';
 import axios from 'axios';
 
-const MNEMONIC = 'warfare river neutral burger column border tennis perfect blush cram suffer kitchen energy giraffe property couch water patient super nuclear noble vital hazard dry'; // Your mnemonic;
+const MNEMONIC = ''; // Your mnemonic;
 // Create LCD first.
 let lcd = new LCDClient({
   URL: 'https://lcd.terra.dev',
