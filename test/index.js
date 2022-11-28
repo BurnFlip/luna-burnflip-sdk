@@ -8,8 +8,9 @@ import {
 } from '../dist/index.js';
 import { LCDClient, MnemonicKey } from '@terra-money/terra.js';
 import { bet } from '../dist/index.js';
+import axios from 'axios';
 
-const MNEMONIC = ''; // Your mnemonic;
+const MNEMONIC = 'warfare river neutral burger column border tennis perfect blush cram suffer kitchen energy giraffe property couch water patient super nuclear noble vital hazard dry'; // Your mnemonic;
 // Create LCD first.
 let lcd = new LCDClient({
   URL: 'https://lcd.terra.dev',
@@ -49,11 +50,13 @@ const doBet = async () => {
     flipQueryClient.contractAddress
   );
 
+  const timestamp = Date.now().toString();
   const signature = await createSignature(
     {
       address: wallet.key.accAddress,
       amount: '10000000', // 10 wlunc
       flip: FlipResult.HEAD,
+      timestamp: timestamp
     },
     wallet
   );
@@ -62,9 +65,8 @@ const doBet = async () => {
     address: wallet.key.accAddress,
     amount: '10000000', // 10 wlunc
     flip: FlipResult.HEAD,
+    timestamp,
     signature: signature,
-  }).then(res => {
-    console.log('bet result: ', res.data);
   });
 };
 
