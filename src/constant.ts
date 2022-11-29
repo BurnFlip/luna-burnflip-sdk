@@ -81,3 +81,4 @@ export const taxCapUrl =
   'https://lcd.terra.dev/terra/treasury/v1beta1/tax_caps/uluna';
 
 export const UNIT = 1000000;
+export const WAIT_TIME_IN_BLOCK = 300_000; // 5 m

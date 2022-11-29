@@ -15,7 +15,7 @@ import {
 } from '@terra-money/terra.js';
 import { ConnectedWallet } from '@terra-money/wallet-provider';
 import { NETWORK } from '../../@types';
-import { NETWORKS, taxCapUrl, taxRateUrl } from '../../constant';
+import { NETWORKS, taxCapUrl, taxRateUrl, WAIT_TIME_IN_BLOCK } from '../../constant';
 import { contractAddress } from '../address';
 import fetch from 'cross-fetch';
 
@@ -544,7 +544,7 @@ export class FlipClient extends FlipQueryClient implements FlipInterface {
         isClassic: this.client.config.isClassic,
         feeDenoms: ['uluna'],
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   withdraw = async (
@@ -577,7 +577,7 @@ export class FlipClient extends FlipQueryClient implements FlipInterface {
         isClassic: this.client.config.isClassic,
         feeDenoms: ['uluna'],
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   setMinBalance = async (
@@ -617,7 +617,7 @@ export class FlipClient extends FlipQueryClient implements FlipInterface {
         isClassic: this.client.config.isClassic,
         feeDenoms: ['uluna'],
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   setNewOwner = async (
@@ -657,7 +657,7 @@ export class FlipClient extends FlipQueryClient implements FlipInterface {
         isClassic: this.client.config.isClassic,
         feeDenoms: ['uluna'],
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   setBetAmountRange = async (
@@ -700,7 +700,7 @@ export class FlipClient extends FlipQueryClient implements FlipInterface {
         isClassic: this.client.config.isClassic,
         feeDenoms: ['uluna'],
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   setCw20TokenAddress = async (
@@ -740,7 +740,7 @@ export class FlipClient extends FlipQueryClient implements FlipInterface {
         isClassic: this.client.config.isClassic,
         feeDenoms: ['uluna'],
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   addResult = async (
@@ -780,7 +780,7 @@ export class FlipClient extends FlipQueryClient implements FlipInterface {
         isClassic: this.client.config.isClassic,
         feeDenoms: ['uluna'],
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   sliceResult = async (
@@ -820,7 +820,7 @@ export class FlipClient extends FlipQueryClient implements FlipInterface {
         isClassic: this.client.config.isClassic,
         feeDenoms: ['uluna'],
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   setOperator = async (
@@ -860,7 +860,7 @@ export class FlipClient extends FlipQueryClient implements FlipInterface {
         isClassic: this.client.config.isClassic,
         feeDenoms: ['uluna'],
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
 }

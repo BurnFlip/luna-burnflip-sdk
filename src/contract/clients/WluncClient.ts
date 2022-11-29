@@ -16,7 +16,7 @@ import {
 } from '@terra-money/terra.js';
 import { ConnectedWallet } from '@terra-money/wallet-provider';
 import { NETWORK } from '../../@types';
-import { NETWORKS, taxCapUrl, taxRateUrl, UNIT } from '../../constant';
+import { NETWORKS, taxCapUrl, taxRateUrl, UNIT, WAIT_TIME_IN_BLOCK } from '../../constant';
 import { contractAddress } from '../address';
 import fetch from 'cross-fetch';
 
@@ -672,7 +672,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
         feeDenoms: ['uluna'],
         fee,
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   redeem = async (
@@ -716,7 +716,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
         feeDenoms: ['uluna'],
         fee,
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   transfer = async (
@@ -762,7 +762,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
         feeDenoms: ['uluna'],
         fee,
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   burn = async (
@@ -805,7 +805,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
         fee: fee,
         feeDenoms: ['uluna'],
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   send = async (
@@ -854,7 +854,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
         fee: fee,
         feeDenoms: ['uluna'],
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   increaseAllowance = async (
@@ -903,7 +903,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
         feeDenoms: ['uluna'],
         fee,
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   decreaseAllowance = async (
@@ -948,7 +948,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
       const execTx = await this.wallet.createAndSignTx({
         msgs: [execMsg],
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   transferFrom = async (
@@ -997,7 +997,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
         fee: fee,
         feeDenoms: ['uluna'],
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   sendFrom = async (
@@ -1049,7 +1049,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
         fee: fee,
         feeDenoms: ['uluna'],
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
   burnFrom = async (
@@ -1095,7 +1095,7 @@ export class WluncClient extends WluncQueryClient implements WluncInterface {
         fee: fee,
         feeDenoms: ['uluna'],
       });
-      return this.client.tx.broadcast(execTx);
+      return this.client.tx.broadcast(execTx, WAIT_TIME_IN_BLOCK);
     }
   };
 }

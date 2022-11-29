@@ -6,6 +6,7 @@ import {
   Wallet,
 } from '@terra-money/terra.js';
 import { ConnectedWallet } from '@terra-money/wallet-provider';
+import fetch from 'cross-fetch';
 import { NETWORK } from './@types';
 import { NETWORKS } from './constant';
 import { WluncClient, WluncQueryClient } from './contract/clients/WluncClient';
@@ -20,14 +21,16 @@ export function getReadonlyTokenClient(network: NETWORK) {
   return new WluncQueryClient(lcd);
 }
 
-export function getTokenClient(
+export async function getTokenClient(
   network: NETWORK,
   wallet: Wallet | ConnectedWallet
 ) {
+  const gasPrices = (await (await fetch(NETWORKS[network].gasPriceUrl)).json());
   const lcd = new LCDClient({
     chainID: NETWORKS[network].chainId,
     URL: NETWORKS[network].url,
-    isClassic: network === 'classic',
+    gasPrices: gasPrices,
+    isClassic: network === 'classic'
   });
   return new WluncClient(lcd, wallet);
 }
@@ -64,7 +67,7 @@ export async function increaseAllowance(
   amount: string,
   spender: string
 ): Promise<WaitTxBroadcastResult | TxInfo | undefined> {
-  const token = getTokenClient(network, wallet);
+  const token = await getTokenClient(network, wallet);
   const tx = token.increaseAllowance({
     amount,
     spender,
@@ -79,7 +82,7 @@ export async function decreaseAllowance(
   amount: string,
   spender: string
 ): Promise<WaitTxBroadcastResult | TxInfo | undefined> {
-  const token = getTokenClient(network, wallet);
+  const token = await getTokenClient(network, wallet);
   const tx = token.decreaseAllowance({
     amount,
     spender,
@@ -93,7 +96,7 @@ export async function mintToken(
   wallet: Wallet | ConnectedWallet,
   amount: string
 ): Promise<WaitTxBroadcastResult | TxInfo | undefined> {
-  const token = getTokenClient(network, wallet);
+  const token = await getTokenClient(network, wallet);
   const tx = token.deposit(new Coins({ uluna: amount }));
 
   return tx;
@@ -104,7 +107,7 @@ export async function redeemToken(
   wallet: Wallet | ConnectedWallet,
   amount: string
 ): Promise<WaitTxBroadcastResult | TxInfo | undefined> {
-  const token = getTokenClient(network, wallet);
+  const token = await getTokenClient(network, wallet);
   const tx = token.redeem({
     amount,
   });
@@ -117,7 +120,7 @@ export async function burn(
   wallet: Wallet | ConnectedWallet,
   amount: string
 ): Promise<WaitTxBroadcastResult | TxInfo | undefined> {
-  const token = getTokenClient(network, wallet);
+  const token = await getTokenClient(network, wallet);
   const tx = token.burn({
     amount,
   });
@@ -131,7 +134,7 @@ export async function burnFrom(
   from: string,
   amount: string
 ): Promise<WaitTxBroadcastResult | TxInfo | undefined> {
-  const token = getTokenClient(network, wallet);
+  const token = await getTokenClient(network, wallet);
   const tx = token.burnFrom({
     amount,
     owner: from,
@@ -146,7 +149,7 @@ export async function transfer(
   recipient: string,
   amount: string
 ): Promise<WaitTxBroadcastResult | TxInfo | undefined> {
-  const token = getTokenClient(network, wallet);
+  const token = await getTokenClient(network, wallet);
   const tx = token.transfer({
     amount,
     recipient,
@@ -162,7 +165,7 @@ export async function transferFrom(
   recipient: string,
   amount: string
 ): Promise<WaitTxBroadcastResult | TxInfo | undefined> {
-  const token = getTokenClient(network, wallet);
+  const token = await getTokenClient(network, wallet);
   const tx = token.transferFrom({
     amount,
     owner,
