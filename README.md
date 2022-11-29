@@ -46,8 +46,8 @@ const mint = async () => {
     mnemonic: MNEMONIC,
   });
   const wallet = lcd.wallet(mk);
-  await mintToken('classic', wallet, "10000000");
-  // Mint 1 WLUNC
+  await mintToken('classic', wallet, "1000000000");
+  // Mint 1k WLUNC
   const balance = await getTokenBalance('classic', wallet.key.accAddress);
   console.log('balance: ', balance);
 };
@@ -67,14 +67,14 @@ const doBet = async () => {
   await increaseAllowance(
     'classic',
     wallet,
-    "10000000",
+    "1000000000",
     flipQueryClient.contractAddress
   );
 
   const signature = await createSignature(
     {
       address: wallet.key.accAddress,
-      amount: '10000000', // 10 wlunc
+      amount: '1000000000', // 1k wlunc
       flip: FlipResult.HEAD,
     },
     wallet
@@ -83,7 +83,7 @@ const doBet = async () => {
   await bet(
     {
       address: wallet.key.accAddress,
-      amount: '10000000', // 10 wlunc
+      amount: '1000000000', // 1k wlunc
       flip: FlipResult.HEAD,
       signature: signature,
     }
