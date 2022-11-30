@@ -31,8 +31,13 @@ const mint = async () => {
     mnemonic: MNEMONIC,
   });
   const wallet = lcd.wallet(mk);
-  await mintToken('classic', wallet, '1000000000');
+  await mintToken('classic', wallet, '1010000000');
   // Mint 1k WLUNC
+  /**
+   * We need to send a bit more than 1K lunc to wrap 1K WLUNC.
+   * Because there is 0.2% tax fee (burn) for lunc transaction.
+   * So if you send 1K lunc, then you will get 998 WLUNC.
+   */
   const balance = await getTokenBalance('classic', wallet.key.accAddress);
   console.log('balance: ', balance);
 };
