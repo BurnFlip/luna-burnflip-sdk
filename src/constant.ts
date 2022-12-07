@@ -7,7 +7,7 @@ export const NETWORKS: NetworkData = {
     gasPriceUrl: 'https://pisco-api.terra.dev/gas-prices',
   },
   classic: {
-    url: 'https://columbus-lcd.terra.dev',
+    url: 'https://lcd.terrarebels.net/',
     chainId: 'columbus-5',
     gasPriceUrl: 'https://columbus-api.terra.dev/gas-prices',
   },
@@ -76,9 +76,9 @@ export const API_URL = 'https://api.burnflip.com';
 
 // classic burn mechanism
 export const taxRateUrl =
-  'https://lcd.terra.dev/terra/treasury/v1beta1/tax_rate';
+  'https://lcd.terrarebels.net/terra/treasury/v1beta1/tax_rate';
 export const taxCapUrl =
-  'https://lcd.terra.dev/terra/treasury/v1beta1/tax_caps/uluna';
+  'https://lcd.terrarebels.net/terra/treasury/v1beta1/tax_caps/uluna';
 
 export const UNIT = 1000000;
 export const WAIT_TIME_IN_BLOCK = 300_000; // 5 m

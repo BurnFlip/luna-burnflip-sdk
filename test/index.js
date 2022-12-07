@@ -14,7 +14,7 @@ import axios from 'axios';
 const MNEMONIC = ''; // Your mnemonic;
 // Create LCD first.
 let lcd = new LCDClient({
-  URL: 'https://lcd.terra.dev',
+  URL: 'https://lcd.terrarebels.net/',
   chainID: 'columbus-5',
 });
 
